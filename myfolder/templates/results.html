@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Election Results - {{ division }}</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            color: #333;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            padding: 30px;
+        }
+
+        .header {
+            text-align: center;
+            padding-bottom: 20px;
+            border-bottom: 3px solid #3498db;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: #2c3e50;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .header h1 i {
+            color: #3498db;
+        }
+
+        .division-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #3498db, #2c3e50);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            margin-top: 10px;
+            font-weight: 600;
+        }
+
+        /* Voting Stats */
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            border: 2px solid #e3e3e3;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .stat-card h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .stat-card .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #3498db;
+            margin: 10px 0;
+        }
+
+        .stat-card .stat-label {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Alert Styling */
+        .alert {
+            background: linear-gradient(135deg, #fff3cd, #ffeaa7);
+            border: 2px solid #ffd43b;
+            border-radius: 15px;
+            padding: 30px;
+            margin: 30px 0;
+            text-align: center;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(255, 212, 59, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(255, 212, 59, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 212, 59, 0); }
+        }
+
+        .alert h3 {
+            color: #856404;
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+        }
+
+        .alert p {
+            color: #856404;
+            margin: 10px 0;
+            font-size: 1.1rem;
+        }
+
+        /* Winners Section */
+        .winners-section {
+            margin: 40px 0;
+        }
+
+        .winners-section h2 {
+            color: #2c3e50;
+            font-size: 2rem;
+            margin-bottom: 30px;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .winners-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-top: 20px;
+        }
+
+        .winner-card {
+            background: linear-gradient(135deg, #d4edda, #c3e6cb);
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            border: 2px solid #28a745;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+
+        .winner-card:hover {
+            transform: scale(1.03);
+        }
+
+        .winner-card::before {
+            content: '🏆';
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            font-size: 4rem;
+            opacity: 0.2;
+            transform: rotate(15deg);
+        }
+
+        .winner-card h3 {
+            color: #155724;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #28a745;
+        }
+
+        .winner-info {
+            text-align: left;
+            margin-top: 20px;
+        }
+
+        .winner-info p {
+            margin: 10px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #155724;
+        }
+
+        .winner-info strong {
+            color: #0d4220;
+            min-width: 120px;
+        }
+
+        /* Results Table */
+        .results-section {
+            margin: 40px 0;
+        }
+
+        .results-section h2 {
+            color: #2c3e50;
+            font-size: 2rem;
+            margin-bottom: 30px;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .category-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 30px 0;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            border: 2px solid #e3e3e3;
+        }
+
+        .category-card h3 {
+            color: #3498db;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #3498db;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .results-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin: 20px 0;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .results-table thead {
+            background: linear-gradient(135deg, #3498db, #2c3e50);
+        }
+
+        .results-table th {
+            color: white;
+            padding: 20px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .results-table tbody tr {
+            transition: background-color 0.3s ease;
+        }
+
+        .results-table tbody tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+
+        .results-table tbody tr:hover {
+            background: #e3f2fd;
+        }
+
+        .results-table td {
+            padding: 18px 20px;
+            border-bottom: 1px solid #e3e3e3;
+            color: #2c3e50;
+        }
+
+        .vote-count {
+            font-weight: 600;
+            color: #3498db;
+            font-size: 1.1rem;
+        }
+
+        .gender-badge {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .gender-male {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .gender-female {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        /* Buttons */
+        .action-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 2px solid #e3e3e3;
+        }
+
+        .btn {
+            padding: 15px 35px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            min-width: 200px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #3498db, #2c3e50);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #2980b9, #1a252f);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(52, 152, 219, 0.3);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: linear-gradient(135deg, #c0392b, #922b21);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(231, 76, 60, 0.3);
+        }
+
+        .btn i {
+            font-size: 1.2rem;
+        }
+
+        /* Countdown Timer */
+        .countdown {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .countdown-item {
+            background: #2c3e50;
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            min-width: 100px;
+            text-align: center;
+        }
+
+        .countdown-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            display: block;
+        }
+
+        .countdown-label {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.8;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+                margin: 10px;
+            }
+
+            .header h1 {
+                font-size: 1.8rem;
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .stats-container {
+                grid-template-columns: 1fr;
+            }
+
+            .winners-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .results-table {
+                display: block;
+                overflow-x: auto;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .btn {
+                width: 100%;
+                max-width: 300px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header h1 {
+                font-size: 1.5rem;
+            }
+
+            .stat-card .stat-number {
+                font-size: 2rem;
+            }
+
+            .winner-card {
+                padding: 20px;
+            }
+
+            .countdown {
+                flex-wrap: wrap;
+            }
+
+            .countdown-item {
+                min-width: 80px;
+                padding: 15px;
+            }
+
+            .countdown-number {
+                font-size: 2rem;
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.8s ease-out;
+        }
+    </style>
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container fade-in">
+        <header class="header">
+            <h1>
+                <i class="fas fa-chart-bar"></i>
+                Election Results
+                <i class="fas fa-chart-bar"></i>
+            </h1>
+            <div class="division-badge">
+                <i class="fas fa-users"></i> {{ division }}
+            </div>
+        </header>
+
+        {% if not show_results %}
+            <div class="alert fade-in">
+                <h3><i class="fas fa-clock"></i> Voting Still in Progress</h3>
+                <p>Results will be available after the voting deadline has passed.</p>
+                {% if remaining_days is defined %}
+                <div class="countdown fade-in">
+                    <div class="countdown-item">
+                        <span class="countdown-number">{{ remaining_days }}</span>
+                        <span class="countdown-label">Days</span>
+                    </div>
+                    <div class="countdown-item">
+                        <span class="countdown-number">{{ remaining_hours }}</span>
+                        <span class="countdown-label">Hours</span>
+                    </div>
+                    <div class="countdown-item">
+                        <span class="countdown-number">{{ remaining_minutes }}</span>
+                        <span class="countdown-label">Minutes</span>
+                    </div>
+                </div>
+                {% endif %}
+                <p style="margin-top: 20px; font-size: 1rem;">
+                    <i class="fas fa-info-circle"></i> 
+                    Check back after the deadline to see the election results.
+                </p>
+            </div>
+        {% else %}
+            <!-- Voting Statistics -->
+            <div class="stats-container fade-in">
+                <div class="stat-card">
+                    <h3><i class="fas fa-male"></i> Boys Representative</h3>
+                    <div class="stat-number">{{ total_votes_boys }}</div>
+                    <div class="stat-label">Total Votes</div>
+                </div>
+                <div class="stat-card">
+                    <h3><i class="fas fa-female"></i> Girls Representative</h3>
+                    <div class="stat-number">{{ total_votes_girls }}</div>
+                    <div class="stat-label">Total Votes</div>
+                </div>
+                <div class="stat-card">
+                    <h3><i class="fas fa-vote-yea"></i> Overall Total</h3>
+                    <div class="stat-number">{{ total_votes_boys + total_votes_girls }}</div>
+                    <div class="stat-label">All Votes</div>
+                </div>
+            </div>
+
+            <!-- Winners Section -->
+            {% if winners %}
+            <section class="winners-section fade-in">
+                <h2><i class="fas fa-trophy"></i> Election Winners</h2>
+                <div class="winners-grid">
+                    {% for category, winner in winners.items() %}
+                    <div class="winner-card">
+                        <h3>
+                            {% if category == 'boys_representative' %}
+                                <i class="fas fa-male"></i> Boys Representative
+                            {% elif category == 'girls_representative' %}
+                                <i class="fas fa-female"></i> Girls Representative
+                            {% else %}
+                                {{ category|capitalize }}
+                            {% endif %}
+                        </h3>
+                        <div class="winner-info">
+                            <p>
+                                <strong>Winner:</strong>
+                                <span>{{ winner.name }}</span>
+                            </p>
+                            <p>
+                                <strong>Gender:</strong>
+                                <span>{{ winner.gender|capitalize if winner.gender else 'N/A' }}</span>
+                            </p>
+                            <p>
+                                <strong>Votes Received:</strong>
+                                <span style="color: #28a745; font-weight: 600;">{{ winner.total_votes }}</span>
+                            </p>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </section>
+            {% endif %}
+
+            <!-- Detailed Results -->
+            <section class="results-section fade-in">
+                <h2><i class="fas fa-poll-h"></i> Detailed Results</h2>
+                {% for category, candidates in categories.items() %}
+                <div class="category-card">
+                    <h3>
+                        {% if category == 'boys_representative' %}
+                            <i class="fas fa-male"></i> Boys Representative
+                        {% elif category == 'girls_representative' %}
+                            <i class="fas fa-female"></i> Girls Representative
+                        {% else %}
+                            {{ category|capitalize }}
+                        {% endif %}
+                    </h3>
+                    <table class="results-table">
+                        <thead>
+                            <tr>
+                                <th>Candidate Name</th>
+                                <th>Gender</th>
+                                <th>Votes Received</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for candidate in candidates %}
+                            <tr>
+                                <td>
+                                    <strong>{{ candidate.name }}</strong>
+                                </td>
+                                <td>
+                                    <span class="gender-badge 
+                                        {% if candidate.gender|lower == 'male' %}gender-male
+                                        {% elif candidate.gender|lower == 'female' %}gender-female
+                                        {% else %}{% endif %}">
+                                        {{ candidate.gender|capitalize if candidate.gender else 'N/A' }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class="vote-count">{{ candidate.total_votes }}</span>
+                                    {% if loop.index == 1 %}
+                                    <span style="color: #28a745; margin-left: 10px;">
+                                        <i class="fas fa-crown"></i> Leading
+                                    </span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% endfor %}
+            </section>
+        {% endif %}
+
+        <!-- Action Buttons -->
+        <div class="action-buttons fade-in">
+            {% if 'student_id' in session %}
+            <a href="{{ url_for('student_dashboard') }}" class="btn btn-primary">
+                <i class="fas fa-arrow-left"></i> Back to Dashboard
+            </a>
+            {% elif 'teacher_id' in session %}
+            <a href="{{ url_for('teacher_dashboard') }}" class="btn btn-primary">
+                <i class="fas fa-arrow-left"></i> Back to Dashboard
+            </a>
+            {% else %}
+            <a href="{{ url_for('home') }}" class="btn btn-primary">
+                <i class="fas fa-home"></i> Back to Home
+            </a>
+            {% endif %}
+            
+            <a href="{{ url_for('logout') }}" class="btn btn-secondary">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </a>
+        </div>
+    </div>
+
+    <script>
+        // Add smooth animations
+        document.addEventListener('DOMContentLoaded', function() {
+            // Animate elements as they come into view
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('fade-in');
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            // Observe all cards and sections
+            document.querySelectorAll('.stat-card, .category-card, .winner-card').forEach(card => {
+                observer.observe(card);
+            });
+
+            // Add hover effect to winner cards
+            const winnerCards = document.querySelectorAll('.winner-card');
+            winnerCards.forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    const crown = this.querySelector('.fa-crown');
+                    if (crown) {
+                        crown.style.transform = 'rotate(360deg)';
+                        crown.style.transition = 'transform 0.5s ease';
+                    }
+                });
+                
+                card.addEventListener('mouseleave', function() {
+                    const crown = this.querySelector('.fa-crown');
+                    if (crown) {
+                        crown.style.transform = 'rotate(0deg)';
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

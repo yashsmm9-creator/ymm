@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Online Voting System</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary-blue: #182848;
+            --secondary-blue: #4b6cb7;
+            --accent-red: #dc0707;
+            --accent-green: #28a745;
+            --accent-yellow: #ffc107;
+            --light-bg: #f8f9fa;
+            --dark-text: #333333;
+            --light-text: #ffffff;
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: var(--dark-text);
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Header Styles */
+        .main-header {
+            background: linear-gradient(to right, var(--primary-blue), var(--secondary-blue));
+            color: var(--light-text);
+            padding: 25px 0;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .main-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M0,0 L100,0 L100,100 Z" fill="rgba(255,255,255,0.05)"/></svg>');
+            background-size: cover;
+        }
+
+        .main-header h1 {
+            font-size: 2.8rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+            letter-spacing: 1px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            position: relative;
+            z-index: 1;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            font-weight: 300;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Notification Banner */
+        .notification-banner {
+            background: linear-gradient(to right, var(--accent-red), #b74b4b);
+            color: white;
+            padding: 12px 0;
+            text-align: center;
+            font-weight: 600;
+            font-size: 1.05rem;
+            box-shadow: 0 3px 10px rgba(220, 7, 7, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .notification-banner::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            animation: shimmer 3s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        /* Navigation */
+        .main-nav {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: var(--primary-blue);
+            padding: 12px 24px;
+            margin: 0 8px;
+            font-weight: 600;
+            border-radius: 30px;
+            transition: var(--transition);
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-link:hover {
+            background: rgba(24, 40, 72, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .nav-link i {
+            font-size: 1.1rem;
+        }
+
+        /* Main Container */
+        .main-container {
+            max-width: 1200px;
+            margin: 50px auto;
+            padding: 0 20px;
+        }
+
+        /* Welcome Section */
+        .welcome-section {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .welcome-title {
+            color: var(--primary-blue);
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            position: relative;
+            display: inline-block;
+        }
+
+        .welcome-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: linear-gradient(to right, var(--accent-red), var(--secondary-blue));
+            border-radius: 2px;
+        }
+
+        .welcome-text {
+            font-size: 1.2rem;
+            color: #555;
+            max-width: 800px;
+            margin: 0 auto 30px;
+            line-height: 1.6;
+        }
+
+        /* Role Selection Cards */
+        .role-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            margin-bottom: 60px;
+        }
+
+        .role-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            text-decoration: none;
+            display: block;
+            height: 100%;
+        }
+
+        .role-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .card-header {
+            padding: 25px 20px;
+            color: white;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card-header::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transform: translateX(-100%);
+        }
+
+        .role-card:hover .card-header::after {
+            animation: slide 1s;
+        }
+
+        @keyframes slide {
+            100% { transform: translateX(100%); }
+        }
+
+        .card-icon {
+            font-size: 3.5rem;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .card-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .card-body {
+            padding: 25px 20px;
+            text-align: center;
+        }
+
+        .card-description {
+            color: #666;
+            font-size: 1rem;
+            line-height: 1.5;
+            margin-bottom: 20px;
+        }
+
+        .card-button {
+            display: inline-block;
+            padding: 12px 30px;
+            background: var(--primary-blue);
+            color: white;
+            border-radius: 30px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: var(--transition);
+            border: 2px solid var(--primary-blue);
+        }
+
+        .card-button:hover {
+            background: transparent;
+            color: var(--primary-blue);
+        }
+
+        /* Card Colors */
+        .student-login .card-header {
+            background: linear-gradient(135deg, var(--secondary-blue), #6a82fb);
+        }
+
+        .student-signup .card-header {
+            background: linear-gradient(135deg, var(--accent-green), #5cd85a);
+        }
+
+        .teacher-login .card-header {
+            background: linear-gradient(135deg, var(--accent-red), #f5576c);
+        }
+
+        .teacher-signup .card-header {
+            background: linear-gradient(135deg, var(--accent-yellow), #f093fb);
+        }
+
+        /* Features Section */
+        .features-section {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: var(--shadow);
+            margin-bottom: 60px;
+        }
+
+        .section-title {
+            color: var(--primary-blue);
+            font-size: 2rem;
+            margin-bottom: 30px;
+            text-align: center;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(to right, var(--accent-red), var(--secondary-blue));
+            border-radius: 2px;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+        }
+
+        .feature-item {
+            text-align: center;
+            padding: 25px 15px;
+            border-radius: 15px;
+            transition: var(--transition);
+        }
+
+        .feature-item:hover {
+            background: rgba(75, 108, 183, 0.05);
+            transform: translateY(-5px);
+        }
+
+        .feature-icon {
+            font-size: 2.5rem;
+            color: var(--secondary-blue);
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .feature-title {
+            font-size: 1.3rem;
+            color: var(--primary-blue);
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .feature-text {
+            color: #666;
+            line-height: 1.6;
+        }
+
+        /* Quick Action Button */
+        .quick-action {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .results-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 15px;
+            padding: 18px 40px;
+            background: linear-gradient(to right, var(--primary-blue), var(--secondary-blue));
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1.2rem;
+            box-shadow: 0 10px 20px rgba(24, 40, 72, 0.2);
+            transition: var(--transition);
+            border: none;
+            cursor: pointer;
+        }
+
+        .results-button:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(24, 40, 72, 0.3);
+            background: linear-gradient(to right, var(--secondary-blue), var(--primary-blue));
+        }
+
+        .results-button i {
+            font-size: 1.5rem;
+        }
+
+        /* Footer */
+        .main-footer {
+            background: linear-gradient(to right, var(--primary-blue), var(--secondary-blue));
+            color: white;
+            padding: 40px 0 20px;
+            margin-top: 80px;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 40px;
+        }
+
+        .footer-section {
+            flex: 1;
+            min-width: 250px;
+        }
+
+        .footer-title {
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            position: relative;
+            padding-bottom: 10px;
+        }
+
+        .footer-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 50px;
+            height: 3px;
+            background: var(--accent-red);
+        }
+
+        .footer-links {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 10px;
+        }
+
+        .footer-links a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .footer-links a:hover {
+            color: white;
+            padding-left: 5px;
+        }
+
+        .footer-links i {
+            font-size: 0.9rem;
+        }
+
+        .copyright {
+            text-align: center;
+            padding-top: 30px;
+            margin-top: 40px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .main-header h1 {
+                font-size: 2.2rem;
+            }
+            
+            .nav-container {
+                flex-wrap: wrap;
+            }
+            
+            .nav-link {
+                padding: 10px 15px;
+                margin: 5px;
+                font-size: 0.9rem;
+            }
+            
+            .welcome-title {
+                font-size: 2rem;
+            }
+            
+            .role-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .features-section {
+                padding: 30px 20px;
+            }
+            
+            .footer-content {
+                flex-direction: column;
+                gap: 30px;
+            }
+        }
+
+        /* Animation for page load */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in {
+            animation: fadeInUp 0.8s ease-out forwards;
+        }
+
+        .delay-1 { animation-delay: 0.1s; opacity: 0; }
+        .delay-2 { animation-delay: 0.2s; opacity: 0; }
+        .delay-3 { animation-delay: 0.3s; opacity: 0; }
+        .delay-4 { animation-delay: 0.4s; opacity: 0; }
+        .delay-5 { animation-delay: 0.5s; opacity: 0; }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header class="main-header fade-in">
+        <h1><i class="fas fa-vote-yea"></i> ONLINE VOTING SYSTEM</h1>
+        <p class="subtitle">Secure • Efficient • Transparent</p>
+    </header>
+
+    <!-- Notification Banner -->
+    <div class="notification-banner fade-in delay-1">
+        <i class="fas fa-bullhorn"></i> WELCOME TO ONLINE VOTING SYSTEM - PLEASE LOGIN OR SIGNUP TO CONTINUE
+    </div>
+
+    <!-- Navigation -->
+    <nav class="main-nav fade-in delay-2">
+        <div class="nav-container">
+            <a href="#" class="nav-link"><i class="fas fa-home"></i> HOME</a>
+            <a href="#" class="nav-link"><i class="fas fa-info-circle"></i> ABOUT</a>
+            <a href="#" class="nav-link"><i class="fas fa-envelope"></i> CONTACT</a>
+            <a href="#" class="nav-link"><i class="fas fa-question-circle"></i> HELP</a>
+            <a href="/all_results" class="nav-link" style="background: var(--accent-red); color: white;"><i class="fas fa-chart-bar"></i> LIVE RESULTS</a>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-container">
+        <!-- Welcome Section -->
+        <section class="welcome-section fade-in delay-1">
+            <h2 class="welcome-title">Select Your Role</h2>
+            <p class="welcome-text">
+                Welcome to the Online Voting System. This platform provides a secure and efficient way 
+                for students to participate in elections and for teachers to manage the voting process.
+            </p>
+        </section>
+
+        <!-- Role Selection Cards -->
+        <div class="role-grid">
+            <a href="/student_login" class="role-card student-login fade-in delay-1">
+                <div class="card-header">
+                    <i class="fas fa-user-graduate card-icon"></i>
+                    <h3 class="card-title">Student Login</h3>
+                </div>
+                <div class="card-body">
+                    <p class="card-description">
+                        Access your existing student account to participate in ongoing elections.
+                    </p>
+                    <span class="card-button">Login Now</span>
+                </div>
+            </a>
+
+            <a href="/student_signup" class="role-card student-signup fade-in delay-2">
+                <div class="card-header">
+                    <i class="fas fa-user-plus card-icon"></i>
+                    <h3 class="card-title">Student Signup</h3>
+                </div>
+                <div class="card-body">
+                    <p class="card-description">
+                        Create a new student account to get started with the voting process.
+                    </p>
+                    <span class="card-button">Register Now</span>
+                </div>
+            </a>
+
+            <a href="/teacher_login" class="role-card teacher-login fade-in delay-3">
+                <div class="card-header">
+                    <i class="fas fa-chalkboard-teacher card-icon"></i>
+                    <h3 class="card-title">Teacher Login</h3>
+                </div>
+                <div class="card-body">
+                    <p class="card-description">
+                        Access the admin dashboard to manage elections and view results.
+                    </p>
+                    <span class="card-button">Admin Login</span>
+                </div>
+            </a>
+
+            <a href="/teacher_signup" class="role-card teacher-signup fade-in delay-4">
+                <div class="card-header">
+                    <i class="fas fa-user-cog card-icon"></i>
+                    <h3 class="card-title">Teacher Signup</h3>
+                </div>
+                <div class="card-body">
+                    <p class="card-description">
+                        Create a new administrator account to manage the voting system.
+                    </p>
+                    <span class="card-button">Register Admin</span>
+                </div>
+            </a>
+        </div>
+
+        <!-- Features Section -->
+        <section class="features-section fade-in delay-3">
+            <h3 class="section-title">System Features</h3>
+            <div class="features-grid">
+                <div class="feature-item">
+                    <i class="fas fa-shield-alt feature-icon"></i>
+                    <h4 class="feature-title">Secure Voting</h4>
+                    <p class="feature-text">Advanced security measures ensure that every vote is protected and anonymous.</p>
+                </div>
+                <div class="feature-item">
+                    <i class="fas fa-bolt feature-icon"></i>
+                    <h4 class="feature-title">Fast Results</h4>
+                    <p class="feature-text">Instant calculation and display of election results after voting ends.</p>
+                </div>
+                <div class="feature-item">
+                    <i class="fas fa-users feature-icon"></i>
+                    <h4 class="feature-title">Multi-Division</h4>
+                    <p class="feature-text">Support for multiple divisions with separate candidates and results.</p>
+                </div>
+                <div class="feature-item">
+                    <i class="fas fa-chart-pie feature-icon"></i>
+                    <h4 class="feature-title">Live Analytics</h4>
+                    <p class="feature-text">Real-time statistics and voting progress for administrators.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Quick Action Button -->
+        <div class="quick-action fade-in delay-4">
+            <a href="/all_results" class="results-button">
+                <i class="fas fa-chart-bar"></i>
+                View Live Election Results
+            </a>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="main-footer fade-in delay-5">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4 class="footer-title">Online Voting System</h4>
+                <p>A secure digital platform for conducting fair and transparent elections in educational institutions.</p>
+            </div>
+            
+            <div class="footer-section">
+                <h4 class="footer-title">Quick Links</h4>
+                <ul class="footer-links">
+                    <li><a href="/"><i class="fas fa-chevron-right"></i> Home</a></li>
+                    <li><a href="/student_login"><i class="fas fa-chevron-right"></i> Student Login</a></li>
+                    <li><a href="/teacher_login"><i class="fas fa-chevron-right"></i> Teacher Login</a></li>
+                    <li><a href="/all_results"><i class="fas fa-chevron-right"></i> Election Results</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-section">
+                <h4 class="footer-title">Contact Info</h4>
+                <ul class="footer-links">
+                    <li><a href="#"><i class="fas fa-envelope"></i> support@votingsystem.edu</a></li>
+                    <li><a href="#"><i class="fas fa-phone"></i> +1 (555) 123-4567</a></li>
+                    <li><a href="#"><i class="fas fa-map-marker-alt"></i> 123 University Ave, City</a></li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="copyright">
+            <p>&copy; 2025 ONLINE VOTING SYSTEM. ALL RIGHTS RESERVED</p>
+        </div>
+    </footer>
+
+    <script>
+        // Add smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Add hover effect to role cards
+        document.querySelectorAll('.role-card').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-10px)';
+            });
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+            });
+        });
+    </script>
+</body>
+</html>

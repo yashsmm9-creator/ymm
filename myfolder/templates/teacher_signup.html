@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teacher Signup - Online Voting System</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0c2461, #1e3799, #4a69bd);
+            min-height: 100vh;
+            color: #333;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Animated Background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 10% 20%, rgba(255,255,255,0.08) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(255,255,255,0.05) 0%, transparent 40%);
+            z-index: -1;
+        }
+
+        /* Main Header */
+        .main-header {
+            background: linear-gradient(90deg, rgba(12, 36, 97, 0.95), rgba(30, 55, 153, 0.95));
+            color: white;
+            padding: 25px 0;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .main-header h1 {
+            font-size: 2.8rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .main-header h1 span {
+            color: #4cd137;
+        }
+
+        /* Marquee */
+        .marquee-container {
+            background: linear-gradient(90deg, #e84118, #c23616);
+            padding: 12px 0;
+            overflow: hidden;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .marquee-text {
+            display: inline-block;
+            color: white;
+            font-weight: 600;
+            font-size: 1.1rem;
+            padding-left: 100%;
+            animation: marquee 25s linear infinite;
+            white-space: nowrap;
+        }
+
+        @keyframes marquee {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-100%); }
+        }
+
+        /* Navigation Bar */
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 0;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            padding: 0 20px;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: #0c2461;
+            padding: 12px 24px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-link:hover {
+            background: linear-gradient(90deg, #0c2461, #1e3799);
+            color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(12, 36, 97, 0.3);
+        }
+
+        .nav-link i {
+            font-size: 1.1rem;
+        }
+
+        /* Signup Container */
+        .signup-container {
+            max-width: 600px;
+            margin: 50px auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .signup-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, #0c2461, #4cd137, #1e3799);
+        }
+
+        .signup-icon {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .signup-icon i {
+            font-size: 4rem;
+            background: linear-gradient(135deg, #0c2461, #4cd137);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .signup-title {
+            text-align: center;
+            color: #0c2461;
+            font-size: 2.2rem;
+            margin-bottom: 30px;
+            font-weight: 700;
+            position: relative;
+            padding-bottom: 15px;
+        }
+
+        .signup-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: linear-gradient(90deg, #0c2461, #4cd137);
+            border-radius: 2px;
+        }
+
+        /* Info Box */
+        .info-box {
+            background: linear-gradient(135deg, rgba(12, 36, 97, 0.1), rgba(76, 209, 55, 0.1));
+            border-left: 4px solid #4cd137;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .info-box::before {
+            content: '⚠️';
+            position: absolute;
+            left: -30px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.5rem;
+        }
+
+        .info-box p {
+            color: #0c2461;
+            font-size: 1rem;
+            line-height: 1.5;
+            margin: 0;
+        }
+
+        /* Form Styling */
+        .signup-form {
+            width: 100%;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+                gap: 0;
+            }
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #0c2461;
+            font-weight: 600;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .form-group label i {
+            color: #4cd137;
+            width: 20px;
+            text-align: center;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 16px 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #4cd137;
+            box-shadow: 0 0 0 3px rgba(76, 209, 55, 0.2);
+            background: white;
+        }
+
+        .form-input::placeholder {
+            color: #999;
+            font-style: italic;
+        }
+
+        /* Password Requirements */
+        .password-requirements {
+            background: rgba(232, 65, 24, 0.1);
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 10px;
+            border-left: 4px solid #e84118;
+        }
+
+        .password-requirements ul {
+            list-style: none;
+            padding-left: 0;
+            margin: 10px 0 0 0;
+        }
+
+        .password-requirements li {
+            color: #c23616;
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .password-requirements li i {
+            font-size: 0.8rem;
+        }
+
+        /* Button Styling */
+        .signup-button {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #0c2461, #1e3799);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin: 30px 0 20px 0;
+            box-shadow: 0 5px 15px rgba(12, 36, 97, 0.3);
+        }
+
+        .signup-button:hover {
+            background: linear-gradient(135deg, #1e3799, #4cd137);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(12, 36, 97, 0.4);
+        }
+
+        .signup-button:active {
+            transform: translateY(0);
+        }
+
+        /* Login Link */
+        .form-help {
+            text-align: center;
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .login-prompt {
+            color: #0c2461;
+            font-size: 1rem;
+            margin-bottom: 15px;
+        }
+
+        .login-link {
+            display: inline-block;
+            padding: 14px 30px;
+            background: linear-gradient(135deg, #4cd137, #44bd32);
+            color: white;
+            text-decoration: none;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(76, 209, 55, 0.3);
+        }
+
+        .login-link:hover {
+            background: linear-gradient(135deg, #44bd32, #4cd137);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(76, 209, 55, 0.4);
+        }
+
+        /* Agreement Text */
+        .agreement-text {
+            margin-top: 25px;
+            padding: 15px;
+            background: rgba(12, 36, 97, 0.05);
+            border-radius: 8px;
+            text-align: center;
+            color: #666;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        /* Footer */
+        .footer {
+            background: linear-gradient(90deg, #0c2461, #1e3799);
+            color: white;
+            text-align: center;
+            padding: 25px 0;
+            margin-top: 50px;
+            position: relative;
+        }
+
+        .footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, #4cd137, #44bd32, #4cd137);
+        }
+
+        .footer p {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .main-header h1 {
+                font-size: 2.2rem;
+            }
+            
+            .nav-container {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .nav-link {
+                width: 90%;
+                justify-content: center;
+            }
+            
+            .signup-container {
+                margin: 30px 20px;
+                padding: 30px 20px;
+            }
+            
+            .signup-title {
+                font-size: 1.8rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .main-header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .marquee-text {
+                font-size: 0.9rem;
+            }
+            
+            .signup-icon i {
+                font-size: 3rem;
+            }
+            
+            .signup-title {
+                font-size: 1.5rem;
+            }
+        }
+
+        /* Form Validation Styles */
+        .form-input:valid {
+            border-color: #4cd137;
+        }
+
+        .form-input:invalid:not(:placeholder-shown) {
+            border-color: #e84118;
+        }
+
+        /* Division Input Specific */
+        .division-input {
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+    </style>
+
+    <script>
+        // Password validation
+        function validatePassword() {
+            const password = document.getElementById('password');
+            const confirm = document.getElementById('confirm_password');
+            const passwordReq = document.getElementById('password-requirements');
+            
+            if (password.value !== confirm.value) {
+                confirm.style.borderColor = '#e84118';
+                return false;
+            }
+            
+            return true;
+        }
+
+        // Division input formatting
+        document.getElementById('division').addEventListener('input', function(e) {
+            this.value = this.value.toUpperCase().replace(/[^A-Z]/g, '');
+            if (this.value.length > 1) {
+                this.value = this.value.charAt(0);
+            }
+        });
+
+        // Form submission validation
+        document.querySelector('.signup-form').addEventListener('submit', function(e) {
+            const password = document.getElementById('password').value;
+            const confirm = document.getElementById('confirm_password').value;
+            
+            if (password.length < 8) {
+                e.preventDefault();
+                alert('Password must be at least 8 characters long.');
+                return false;
+            }
+            
+            if (password !== confirm) {
+                e.preventDefault();
+                alert('Passwords do not match.');
+                return false;
+            }
+            
+            // Show loading state
+            const button = document.querySelector('.signup-button');
+            const originalText = button.innerHTML;
+            button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating Account...';
+            button.disabled = true;
+            
+            // Allow form to submit normally after showing loading state
+            return true;
+        });
+
+        // Password strength indicator
+        document.getElementById('password').addEventListener('input', function() {
+            const password = this.value;
+            const requirements = document.querySelectorAll('.password-requirements li');
+            
+            // Reset all requirements
+            requirements.forEach(req => {
+                req.style.color = '#c23616';
+                req.querySelector('i').className = 'fas fa-times';
+            });
+            
+            // Check each requirement
+            if (password.length >= 8) {
+                requirements[0].style.color = '#4cd137';
+                requirements[0].querySelector('i').className = 'fas fa-check';
+            }
+            
+            if (/[A-Z]/.test(password)) {
+                requirements[1].style.color = '#4cd137';
+                requirements[1].querySelector('i').className = 'fas fa-check';
+            }
+            
+            if (/[a-z]/.test(password)) {
+                requirements[2].style.color = '#4cd137';
+                requirements[2].querySelector('i').className = 'fas fa-check';
+            }
+            
+            if (/[0-9]/.test(password)) {
+                requirements[3].style.color = '#4cd137';
+                requirements[3].querySelector('i').className = 'fas fa-check';
+            }
+        });
+
+        // Real-time password matching
+        document.getElementById('confirm_password').addEventListener('input', function() {
+            const password = document.getElementById('password').value;
+            const confirm = this.value;
+            
+            if (confirm === '') {
+                this.style.borderColor = '#e0e0e0';
+            } else if (password === confirm) {
+                this.style.borderColor = '#4cd137';
+            } else {
+                this.style.borderColor = '#e84118';
+            }
+        });
+    </script>
+</head>
+<body>
+
+    <header class="main-header">
+        <h1>ONLINE <span>VOTING</span> SYSTEM</h1>
+    </header>
+
+    <div class="marquee-container">
+        <div class="marquee-text">
+            <i class="fas fa-user-shield"></i> TEACHER REGISTRATION PORTAL - CREATE ADMINISTRATOR ACCOUNT &nbsp;&nbsp;&nbsp;
+            <i class="fas fa-key"></i> ACCESS CODE REQUIRED &nbsp;&nbsp;&nbsp;
+            <i class="fas fa-chalkboard-teacher"></i> ADMINISTRATIVE PRIVILEGES GRANTED
+        </div>
+    </div>
+
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="/" class="nav-link">
+                <i class="fas fa-home"></i> HOME
+            </a>
+            <a href="/teacher_login" class="nav-link">
+                <i class="fas fa-sign-in-alt"></i> TEACHER LOGIN
+            </a>
+            <a href="/student_signup" class="nav-link">
+                <i class="fas fa-user-graduate"></i> STUDENT SIGNUP
+            </a>
+            <a href="/contact" class="nav-link">
+                <i class="fas fa-headset"></i> CONTACT SUPPORT
+            </a>
+        </div>
+    </nav>
+
+    <div class="signup-container">
+        <div class="signup-icon">
+            <i class="fas fa-chalkboard-teacher"></i>
+        </div>
+        
+        <h1 class="signup-title">Teacher Registration</h1>
+        
+        <div class="info-box">
+            <p><strong>Important:</strong> Teacher accounts have full administrative privileges. You will manage elections, add candidates, set deadlines, and view results.</p>
+        </div>
+        
+        <form method="post" class="signup-form" action="/teacher_signup">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="name">
+                        <i class="fas fa-user"></i> Full Name:
+                    </label>
+                    <input type="text" id="name" name="name" class="form-input" 
+                           placeholder="Enter your full name" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="division">
+                        <i class="fas fa-building"></i> Division:
+                    </label>
+                    <input type="text" id="division" name="division" class="form-input division-input"
+                           placeholder="A, B, C, etc." 
+                           pattern="[A-Z]"
+                           title="Enter a single alphabet like A, B, C"
+                           required>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="email">
+                    <i class="fas fa-envelope"></i> Email Address:
+                </label>
+                <input type="email" id="email" name="email" class="form-input" 
+                       placeholder="Enter your institutional email" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="access_code">
+                    <i class="fas fa-key"></i> Teacher Access Code:
+                </label>
+                <input type="password" id="access_code" name="access_code" class="form-input" 
+                       placeholder="Enter administrator access code" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="password">
+                    <i class="fas fa-lock"></i> Password:
+                </label>
+                <input type="password" id="password" name="password" class="form-input" 
+                       placeholder="Create a strong password" required>
+                
+                <div class="password-requirements">
+                    <strong>Password Requirements:</strong>
+                    <ul>
+                        <li><i class="fas fa-times"></i> Minimum 8 characters</li>
+                        <li><i class="fas fa-times"></i> At least one uppercase letter</li>
+                        <li><i class="fas fa-times"></i> At least one lowercase letter</li>
+                        <li><i class="fas fa-times"></i> At least one number</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="confirm_password">
+                    <i class="fas fa-lock"></i> Confirm Password:
+                </label>
+                <input type="password" id="confirm_password" name="confirm_password" class="form-input" 
+                       placeholder="Re-enter your password" required>
+            </div>
+            
+            <button type="submit" class="signup-button">
+                <i class="fas fa-user-plus"></i> Create Teacher Account
+            </button>
+        </form>
+        
+        <div class="form-help">
+            <p class="login-prompt">Already have a teacher account?</p>
+            <a href="/teacher_login" class="login-link">
+                <i class="fas fa-sign-in-alt"></i> Login to Existing Account
+            </a>
+        </div>
+        
+        <div class="agreement-text">
+            <p>
+                <i class="fas fa-shield-alt"></i> By creating an account, you acknowledge administrative access privileges 
+                and agree to maintain election integrity. All accounts require administrator approval.
+            </p>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <p>&copy; 2025 ONLINE VOTING SYSTEM. ALL RIGHTS RESERVED</p>
+        <p style="margin-top: 8px; font-size: 0.9rem; opacity: 0.8;">
+            <i class="fas fa-user-shield"></i> Administrative Access | 
+            <i class="fas fa-lock"></i> Secure Registration
+        </p>
+    </footer>
+
+</body>
+</html>

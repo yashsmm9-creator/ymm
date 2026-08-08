@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teacher Login - Online Voting System</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0c2461, #1e3799, #4a69bd);
+            min-height: 100vh;
+            color: #333;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Animated Background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(255,255,255,0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255,255,255,0.05) 0%, transparent 50%);
+            z-index: -1;
+        }
+
+        /* Main Header */
+        .main-header {
+            background: linear-gradient(90deg, rgba(12, 36, 97, 0.95), rgba(30, 55, 153, 0.95));
+            color: white;
+            padding: 25px 0;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .main-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            animation: shine 3s infinite;
+        }
+
+        @keyframes shine {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        .main-header h1 {
+            font-size: 2.8rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            position: relative;
+            z-index: 1;
+        }
+
+        .main-header h1 span {
+            color: #4cd137;
+        }
+
+        /* Marquee */
+        .marquee-container {
+            background: linear-gradient(90deg, #e84118, #c23616);
+            padding: 12px 0;
+            overflow: hidden;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .marquee-text {
+            display: inline-block;
+            color: white;
+            font-weight: 600;
+            font-size: 1.1rem;
+            padding-left: 100%;
+            animation: marquee 25s linear infinite;
+            white-space: nowrap;
+        }
+
+        @keyframes marquee {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-100%); }
+        }
+
+        /* Navigation Bar */
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 0;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            padding: 0 20px;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: #0c2461;
+            padding: 12px 24px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-link::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(76, 209, 55, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .nav-link:hover::before {
+            left: 100%;
+        }
+
+        .nav-link:hover {
+            background: linear-gradient(90deg, #0c2461, #1e3799);
+            color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(12, 36, 97, 0.3);
+        }
+
+        .nav-link i {
+            font-size: 1.1rem;
+        }
+
+        /* Login Container */
+        .login-container {
+            max-width: 500px;
+            margin: 50px auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .login-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, #0c2461, #4cd137, #1e3799);
+        }
+
+        .teacher-icon {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .teacher-icon i {
+            font-size: 4rem;
+            background: linear-gradient(135deg, #0c2461, #4cd137);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .login-title {
+            text-align: center;
+            color: #0c2461;
+            font-size: 2.2rem;
+            margin-bottom: 30px;
+            font-weight: 700;
+            position: relative;
+            padding-bottom: 15px;
+        }
+
+        .login-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: linear-gradient(90deg, #0c2461, #4cd137);
+            border-radius: 2px;
+        }
+
+        /* Teacher Info Box */
+        .teacher-info {
+            background: linear-gradient(135deg, rgba(12, 36, 97, 0.1), rgba(76, 209, 55, 0.1));
+            border-left: 4px solid #4cd137;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+
+        .teacher-info p {
+            color: #0c2461;
+            font-size: 1rem;
+            line-height: 1.5;
+        }
+
+        .teacher-info strong {
+            color: #e84118;
+        }
+
+        /* Form Styling */
+        .login-form {
+            width: 100%;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #0c2461;
+            font-weight: 600;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .form-group label i {
+            color: #4cd137;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 16px 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #4cd137;
+            box-shadow: 0 0 0 3px rgba(76, 209, 55, 0.2);
+            background: white;
+        }
+
+        .form-input::placeholder {
+            color: #999;
+        }
+
+        /* Login Button */
+        .login-button {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #0c2461, #1e3799);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin-top: 10px;
+            box-shadow: 0 5px 15px rgba(12, 36, 97, 0.3);
+        }
+
+        .login-button:hover {
+            background: linear-gradient(135deg, #1e3799, #4cd137);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(12, 36, 97, 0.4);
+        }
+
+        .login-button:active {
+            transform: translateY(0);
+        }
+
+        /* Form Help Links */
+        .form-help {
+            margin-top: 25px;
+            text-align: center;
+        }
+
+        .forgot-link {
+            color: #e84118;
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: color 0.3s;
+        }
+
+        .forgot-link:hover {
+            color: #c23616;
+            text-decoration: underline;
+        }
+
+        .signup-prompt {
+            margin: 20px 0;
+            color: #0c2461;
+            font-size: 1rem;
+        }
+
+        .signup-link {
+            display: inline-block;
+            padding: 14px 30px;
+            background: linear-gradient(135deg, #4cd137, #44bd32);
+            color: white;
+            text-decoration: none;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(76, 209, 55, 0.3);
+        }
+
+        .signup-link:hover {
+            background: linear-gradient(135deg, #44bd32, #4cd137);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(76, 209, 55, 0.4);
+        }
+
+        .signup-link:active {
+            transform: translateY(0);
+        }
+
+        /* Agreement Text */
+        .agreement-text {
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px solid #e0e0e0;
+            text-align: center;
+            color: #666;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        /* Footer */
+        .footer {
+            background: linear-gradient(90deg, #0c2461, #1e3799);
+            color: white;
+            text-align: center;
+            padding: 25px 0;
+            margin-top: 50px;
+            position: relative;
+        }
+
+        .footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, #4cd137, #44bd32, #4cd137);
+        }
+
+        .footer p {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .main-header h1 {
+                font-size: 2.2rem;
+            }
+            
+            .nav-container {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .nav-link {
+                width: 90%;
+                justify-content: center;
+            }
+            
+            .login-container {
+                margin: 30px 20px;
+                padding: 30px 20px;
+            }
+            
+            .login-title {
+                font-size: 1.8rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .main-header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .marquee-text {
+                font-size: 0.9rem;
+            }
+            
+            .teacher-icon i {
+                font-size: 3rem;
+            }
+            
+            .login-title {
+                font-size: 1.5rem;
+            }
+        }
+
+        /* Loading Animation */
+        .loading-spinner {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="main-header">
+        <h1>ONLINE <span>VOTING</span> SYSTEM</h1>
+    </header>
+
+    <div class="marquee-container">
+        <div class="marquee-text">
+            <i class="fas fa-exclamation-circle"></i> TEACHER LOGIN PORTAL - ACCESS ADMINISTRATOR DASHBOARD &nbsp;&nbsp;&nbsp;
+            <i class="fas fa-shield-alt"></i> SECURE ADMINISTRATIVE ACCESS ONLY &nbsp;&nbsp;&nbsp;
+            <i class="fas fa-vote-yea"></i> MANAGE ELECTIONS, CANDIDATES, AND RESULTS
+        </div>
+    </div>
+
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="/" class="nav-link">
+                <i class="fas fa-home"></i> HOME
+            </a>
+            <a href="/teacher_signup" class="nav-link">
+                <i class="fas fa-user-plus"></i> TEACHER SIGNUP
+            </a>
+            <a href="/student_login" class="nav-link">
+                <i class="fas fa-graduation-cap"></i> STUDENT LOGIN
+            </a>
+            <a href="/contact" class="nav-link">
+                <i class="fas fa-headset"></i> CONTACT ADMIN
+            </a>
+        </div>
+    </nav>
+
+    <div class="login-container">
+        <div class="teacher-icon">
+            <i class="fas fa-chalkboard-teacher"></i>
+        </div>
+        
+        <h1 class="login-title">Teacher Login</h1>
+        
+        <div class="teacher-info">
+            <p><strong><i class="fas fa-info-circle"></i> Note:</strong> Teacher accounts have administrative privileges for managing elections, candidates, deadlines, and viewing results. Access is restricted to authorized personnel only.</p>
+        </div>
+        
+        <form method="POST" action="/teacher_login" class="login-form" id="loginForm">
+            <div class="form-group">
+                <label for="email">
+                    <i class="fas fa-envelope"></i> Email Address:
+                </label>
+                <input type="email" id="email" name="email" class="form-input" 
+                       placeholder="Enter your registered email address" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="password">
+                    <i class="fas fa-lock"></i> Password:
+                </label>
+                <input type="password" id="password" name="password" class="form-input" 
+                       placeholder="Enter your secure password" required>
+            </div>
+            
+            <button type="submit" class="login-button" id="loginButton">
+                <span>Login to Dashboard</span>
+                <div class="loading-spinner" id="spinner"></div>
+                <i class="fas fa-sign-in-alt"></i>
+            </button>
+        </form>
+        
+        <div class="form-help">
+            <p style="margin: 15px 0;">
+                <a href="/teacher_forgot_password" class="forgot-link">
+                    <i class="fas fa-key"></i> Forgot Password?
+                </a>
+            </p>
+            
+            <p class="signup-prompt">Don't have a teacher account?</p>
+            
+            <a href="/teacher_signup" class="signup-link">
+                <i class="fas fa-user-plus"></i> Create New Teacher Account
+            </a>
+        </div>
+        
+        <div class="agreement-text">
+            <p>
+                <i class="fas fa-shield-alt"></i> By logging in, you acknowledge that you have administrative privileges 
+                and agree to maintain election integrity and data confidentiality.
+            </p>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <p>&copy; 2025 ONLINE VOTING SYSTEM. ALL RIGHTS RESERVED</p>
+        <p style="margin-top: 8px; font-size: 0.9rem; opacity: 0.8;">
+            <i class="fas fa-lock"></i> Secure Platform | 
+            <i class="fas fa-user-shield"></i> Admin Access Only
+        </p>
+    </footer>
+
+    <script>
+        // Form submission with loading indicator
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            const button = document.getElementById('loginButton');
+            const spinner = document.getElementById('spinner');
+            const buttonText = button.querySelector('span');
+            
+            // Show loading state
+            buttonText.textContent = 'Authenticating...';
+            spinner.style.display = 'inline-block';
+            button.disabled = true;
+            
+            // Simulate network delay for better UX
+            setTimeout(() => {
+                // Form will submit normally after this
+            }, 500);
+        });
+
+        // Add input validation feedback
+        const inputs = document.querySelectorAll('.form-input');
+        inputs.forEach(input => {
+            input.addEventListener('input', function() {
+                if (this.checkValidity()) {
+                    this.style.borderColor = '#4cd137';
+                } else {
+                    this.style.borderColor = '#e84118';
+                }
+            });
+            
+            input.addEventListener('blur', function() {
+                if (!this.value) {
+                    this.style.borderColor = '#e0e0e0';
+                }
+            });
+        });
+
+        // Add keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            // Ctrl+Enter to submit form
+            if (e.ctrlKey && e.key === 'Enter') {
+                document.getElementById('loginForm').submit();
+            }
+            
+            // Focus email field on 'e' key
+            if (e.key === 'e' && !e.ctrlKey && !e.altKey) {
+                document.getElementById('email').focus();
+                e.preventDefault();
+            }
+        });
+    </script>
+
+</body>
+</html>

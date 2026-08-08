@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voting Form - Online Voting System</title>
+    
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Animated background elements */
+        .bg-bubbles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .bg-bubbles li {
+            position: absolute;
+            list-style: none;
+            display: block;
+            width: 40px;
+            height: 40px;
+            background-color: rgba(255, 255, 255, 0.15);
+            bottom: -160px;
+            animation: square 25s infinite;
+            border-radius: 10px;
+        }
+
+        .bg-bubbles li:nth-child(1) {
+            left: 10%;
+            animation-delay: 0s;
+        }
+
+        .bg-bubbles li:nth-child(2) {
+            left: 20%;
+            width: 80px;
+            height: 80px;
+            animation-delay: 2s;
+            animation-duration: 17s;
+        }
+
+        .bg-bubbles li:nth-child(3) {
+            left: 25%;
+            animation-delay: 4s;
+        }
+
+        .bg-bubbles li:nth-child(4) {
+            left: 40%;
+            width: 60px;
+            height: 60px;
+            animation-delay: 0s;
+            animation-duration: 22s;
+        }
+
+        .bg-bubbles li:nth-child(5) {
+            left: 70%;
+            animation-delay: 1s;
+        }
+
+        .bg-bubbles li:nth-child(6) {
+            left: 80%;
+            width: 120px;
+            height: 120px;
+            animation-delay: 3s;
+        }
+
+        .bg-bubbles li:nth-child(7) {
+            left: 32%;
+            width: 160px;
+            height: 160px;
+            animation-delay: 7s;
+        }
+
+        .bg-bubbles li:nth-child(8) {
+            left: 55%;
+            width: 20px;
+            height: 20px;
+            animation-delay: 15s;
+            animation-duration: 40s;
+        }
+
+        .bg-bubbles li:nth-child(9) {
+            left: 25%;
+            width: 10px;
+            height: 10px;
+            animation-delay: 2s;
+            animation-duration: 40s;
+        }
+
+        .bg-bubbles li:nth-child(10) {
+            left: 90%;
+            width: 160px;
+            height: 160px;
+            animation-delay: 11s;
+        }
+
+        @keyframes square {
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 1;
+                border-radius: 10px;
+            }
+            100% {
+                transform: translateY(-1000px) rotate(720deg);
+                opacity: 0;
+                border-radius: 50%;
+            }
+        }
+
+        /* Header */
+        h1 {
+            text-align: center;
+            padding: 25px 0;
+            background: linear-gradient(to right, #182848, #4b6cb7);
+            color: white;
+            margin: 0;
+            font-size: 2.5rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            letter-spacing: 1px;
+        }
+
+        marquee {
+            background: linear-gradient(to right, #dc0707, #b74b4b);
+            color: white;
+            padding: 10px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Navigation Bar */
+        .navbar {
+            background: linear-gradient(to right, #182848, #4b6cb7);
+            overflow: hidden;
+            text-align: center;
+            padding: 12px 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar a {
+            text-decoration: none;
+            color: white;
+            padding: 14px 25px;
+            margin: 0 10px;
+            font-size: 18px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            position: relative;
+            border-radius: 5px;
+        }
+
+        .navbar a:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 25px;
+            transform: translateY(-2px);
+        }
+
+        /* Centered Container */
+        .container {
+            width: 60%;
+            margin: 60px auto;
+            background: linear-gradient(145deg, rgba(255, 255, 255, 0.9), rgba(240, 240, 240, 0.9));
+            padding: 50px 40px;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .container::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transform: rotate(45deg);
+            animation: shine 3s infinite linear;
+        }
+
+        @keyframes shine {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+        }
+
+        .container h2 {
+            color: #182848;
+            margin-bottom: 40px;
+            font-size: 2.5rem;
+            position: relative;
+            display: inline-block;
+            padding-bottom: 15px;
+        }
+
+        .container h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 25%;
+            width: 50%;
+            height: 4px;
+            background: linear-gradient(to right, #dc0707, #4b6cb7);
+            border-radius: 2px;
+        }
+
+        /* Form Styling */
+        .voting-form {
+            width: 80%;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        /* Select Dropdown Styling */
+        select {
+            width: 100%;
+            max-width: 400px;
+            padding: 18px 25px;
+            font-size: 1.2rem;
+            border: 2px solid #182848;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.95);
+            appearance: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23182848' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 25px center;
+            background-size: 20px;
+            color: #333;
+            font-weight: 500;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        select:focus {
+            outline: none;
+            border-color: #4b6cb7;
+            box-shadow: 0 0 0 3px rgba(75, 108, 183, 0.2), 0 8px 20px rgba(0, 0, 0, 0.15);
+            transform: translateY(-3px);
+        }
+
+        select option {
+            padding: 15px;
+            font-size: 1.1rem;
+            background: white;
+            color: #333;
+            border-bottom: 1px solid #eee;
+        }
+
+        select option:first-child {
+            color: #888;
+            font-style: italic;
+        }
+
+        select option:hover {
+            background: #f0f5ff;
+        }
+
+        select option:checked {
+            background: linear-gradient(to right, #182848, #4b6cb7);
+            color: white;
+            font-weight: bold;
+        }
+
+        /* Submit Button */
+        button[type="submit"] {
+            display: inline-block;
+            padding: 18px 40px;
+            font-size: 1.3rem;
+            font-weight: bold;
+            background: linear-gradient(to right, #28a745, #20c997);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 8px 20px rgba(40, 167, 69, 0.3);
+            min-width: 250px;
+            letter-spacing: 1px;
+        }
+
+        button[type="submit"]::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        button[type="submit"]:hover::before {
+            left: 100%;
+        }
+
+        button[type="submit"]:hover {
+            background: linear-gradient(to right, #20c997, #28a745);
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 12px 25px rgba(40, 167, 69, 0.4);
+        }
+
+        button[type="submit"]:active {
+            transform: translateY(-2px) scale(1.02);
+        }
+
+        /* Election Info */
+        .election-info {
+            background: rgba(24, 40, 72, 0.1);
+            padding: 20px;
+            border-radius: 15px;
+            margin: 30px auto;
+            max-width: 400px;
+            text-align: center;
+            font-size: 1.1rem;
+            color: #182848;
+            border-left: 5px solid #182848;
+        }
+
+        .candidate-count {
+            display: inline-block;
+            background: linear-gradient(to right, #182848, #4b6cb7);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+        }
+
+        .warning-box {
+            background: rgba(220, 7, 7, 0.1);
+            padding: 20px;
+            border-radius: 12px;
+            margin: 30px auto;
+            max-width: 400px;
+            border-left: 5px solid #dc0707;
+            color: #b74b4b;
+            font-size: 1rem;
+            text-align: left;
+        }
+
+        .warning-box strong {
+            color: #dc0707;
+        }
+
+        .footer {
+            background: linear-gradient(to right, #182848, #4b6cb7);
+            color: white;
+            text-align: center;
+            padding: 20px 0;
+            width: 100%;
+            position: relative;
+            margin-top: 60px;
+            box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .footer p {
+            margin: 0;
+            font-size: 1rem;
+            letter-spacing: 0.5px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Animated Background Bubbles -->
+    <ul class="bg-bubbles">
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+    </ul>
+
+    <h1>ONLINE VOTING SYSTEM</h1>
+    <marquee>CAST YOUR VOTE - SHAPE THE FUTURE!</marquee>
+
+    <nav class="navbar">
+        <a href="/student/dashboard">DASHBOARD</a>
+        <a href="/student/profile">PROFILE</a>
+        <a href="/help">HELP</a>
+        <a href="/logout">LOGOUT</a>
+    </nav>
+
+    <div class="container">
+        <h2>Cast Your Vote</h2>
+        
+        <div class="election-info">
+            <div class="candidate-count">
+                {{ candidates|length }} Candidates Available
+            </div>
+            <p>Select your preferred candidate from the dropdown below</p>
+        </div>
+        
+        <div class="warning-box">
+            <strong>⚠️ Important:</strong> You can only vote once. 
+            Your selection is final and cannot be changed.
+        </div>
+        
+        <form method="POST" class="voting-form">
+            <select name="candidate_id" required>
+                <option value="">Select Candidate</option>
+                {% for c in candidates %}
+                    <option value="{{ c[0] }}">
+                        {{ c[1] }} ({{ c[2] }})
+                    </option>
+                {% endfor %}
+            </select>
+
+            <br>
+            
+            <button type="submit">Submit Vote</button>
+        </form>
+        
+        <p style="margin-top: 40px; font-size: 0.9rem; color: #666;">
+            Need assistance? Contact the election administrator at 
+            <a href="mailto:admin@votingsystem.edu" style="color: #4b6cb7; text-decoration: none; font-weight: bold;">
+                admin@votingsystem.edu
+            </a>
+        </p>
+    </div>
+
+    <div class="footer">
+        <p>&copy; 2025 ONLINE VOTING SYSTEM. ALL RIGHTS RESERVED</p>
+    </div>
+
+    
+
+</body>
+</html>

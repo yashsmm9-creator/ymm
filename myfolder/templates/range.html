@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>PRN Range</title>
+
+<style>
+body{
+    margin:0;
+    font-family:Arial, Helvetica, sans-serif;
+    background:url(vs2.jpg);
+    background-size:cover;
+}
+
+.container{
+    width:70%;
+    margin:50px auto;
+    background:rgba(255,255,255,0.95);
+    padding:30px;
+    border-radius:12px;
+}
+
+h2{
+    text-align:center;
+    color:#182848;
+}
+
+label{
+    font-weight:bold;
+    display:block;
+    margin-top:15px;
+}
+
+input{
+    width:100%;
+    padding:10px;
+    margin-top:5px;
+    font-size:16px;
+}
+
+button{
+    margin-top:20px;
+    padding:12px 25px;
+    background:#182848;
+    color:white;
+    border:none;
+    border-radius:6px;
+    font-size:16px;
+    cursor:pointer;
+}
+
+.added-box{
+    margin-top:30px;
+    background:#f1f5fd;
+    padding:15px;
+    border-radius:8px;
+}
+
+.prn-tag{
+    display:inline-block;
+    padding:6px 12px;
+    background:#4b6cb7;
+    color:white;
+    border-radius:20px;
+    margin:5px;
+    font-size:14px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+<h2>🆔 PRN (RANGE)</h2>
+
+<form method="POST">
+
+<label>Range Between Two Values (e.g. 21IT001 – 21IT050)</label>
+<input type="text" name="range_start" placeholder="Start PRN">
+<input type="text" name="range_end" placeholder="End PRN">
+
+<label>Individual PRN Values (comma separated)</label>
+<input type="text" name="individual_prn" placeholder="21IT060, 21IT061">
+
+<button type="submit">Add PRN</button>
+</form>
+
+<div class="added-box">
+<h3>✅ Added PRNs</h3>
+
+{% if prns %}
+    {% for p in prns %}
+        <span class="prn-tag">{{ p }}</span>
+    {% endfor %}
+{% else %}
+    <p>No PRNs added yet</p>
+{% endif %}
+</div>
+
+</div>
+
+</body>
+</html>
+3030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030
